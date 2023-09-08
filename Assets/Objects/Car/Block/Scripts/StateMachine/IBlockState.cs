@@ -4,8 +4,17 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public interface IBlockState
+public abstract class IBlockState
 {
-    public void Enter();
-    public void Exit();
+    public Block block;
+    public Rigidbody2D rigidbody;
+
+    public IBlockState(Block block)
+    {
+        this.block = block;
+        rigidbody = block?.GetComponent<Rigidbody2D>();
+    }
+    public abstract void Enter();
+    public abstract void Process(float dTime);
+    public abstract void Exit();
 }
