@@ -6,20 +6,19 @@ using UnityEngine;
 [Serializable]
 public class Idle : IBlockState
 {
-    Block block;
+    public Idle(Block block) : base(block) { }
 
-    public Idle(Block block)
-    {
-        this.block = block;
-        Debug.Log(block);
-    }
-
-    public void Enter()
+    public override void Enter()
     {
 
     }
 
-    public void Exit()
+    public override void Exit()
+    {
+
+    }
+
+    public override void Process(float dTime)
     {
 
     }

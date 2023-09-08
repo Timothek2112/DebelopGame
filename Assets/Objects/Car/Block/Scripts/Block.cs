@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(BoxCollider2D))]
+[RequireComponent(typeof(BoxCollider2D), typeof(Rigidbody2D))]
 public class Block : MonoBehaviour
 {
     public List<Block> connectedBlocks = new List<Block>();
@@ -14,14 +14,19 @@ public class Block : MonoBehaviour
     
     public void Awake()
     {
-        allStates = new Dictionary<Type, IBlockState>()
-    {
-        { typeof(Idle), new Idle(this) },
-        { typeof(Drag), new Drag(this) },
-        { typeof(Destroyed), new Destroyed(this) },
-    };
+        allStates = new Dictionary<Type, IBlockState>() // Здесь задаются все возможные состояния
+        {
+            { typeof(Idle), new Idle(this) },
+            { typeof(Drag), new Drag(this) },
+            { typeof(Destroyed), new Destroyed(this) },
+        };
         EnterState<Idle>();
         core = GameObject.FindGameObjectWithTag("Core").GetComponent<Block>();
+    }
+
+    public void Update()
+    {
+        currentState.Process(Time.deltaTime);
     }
 
     public void DisconnectAll()
@@ -56,5 +61,11 @@ public class Block : MonoBehaviour
         currentState?.Exit();
         currentState = state;
         state.Enter();
+    }
+
+    public void OnMouseDown()
+    {
+        EnterState<Drag>();
+        Debug.Log("Drag");
     }
 }

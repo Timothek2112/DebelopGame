@@ -3,23 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 [Serializable]
 public class Destroyed : IBlockState
 {
-    public Block block;
+    public Destroyed(Block block) : base(block) { }
 
-    public Destroyed(Block block)
-    {
-        this.block = block;
-    }
-
-    public void Enter()
+    public override void Enter()
     {
 
     }
 
-    public void Exit()
+    public override void Exit()
+    {
+
+    }
+
+    public override void Process(float dTime)
     {
 
     }
