@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8384199742521606308}
   m_Layer: 0
   m_Name: Core
-  m_TagString: Untagged
+  m_TagString: Core
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -120,7 +120,7 @@ Transform:
   - {fileID: 7641346961550904614}
   - {fileID: 1906192009375933257}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4130668824191317564
 GameObject:
