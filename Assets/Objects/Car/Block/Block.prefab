@@ -10,9 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 3179417994667364807}
   - component: {fileID: 9019267487594497673}
+  - component: {fileID: 9371214376139645}
   m_Layer: 0
   m_Name: D
-  m_TagString: Untagged
+  m_TagString: Collider
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -61,7 +62,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: -0.3211045}
@@ -77,6 +78,20 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.24187803, y: 0.18263365}
   m_EdgeRadius: 0
+--- !u!114 &9371214376139645
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1276860197868222751}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 138df9b997f631649a9b0196502dc5a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parentBlock: {fileID: 0}
+  refPosition: {x: 0, y: -1}
 --- !u!1 &1282466997189822055
 GameObject:
   m_ObjectHideFlags: 0
@@ -89,6 +104,7 @@ GameObject:
   - component: {fileID: 5030885934838176859}
   - component: {fileID: 7671461424143248162}
   - component: {fileID: 8040452424628436048}
+  - component: {fileID: 1631270818196809960}
   m_Layer: 0
   m_Name: Block
   m_TagString: Untagged
@@ -180,8 +196,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   connectedBlocks: []
+  canConnectTo: []
+  isCore: 0
   position: {x: 0, y: 0}
   core: {fileID: 0}
+  isConnected: 0
 --- !u!61 &8040452424628436048
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -227,6 +246,33 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.64, y: 0.64}
   m_EdgeRadius: 0
+--- !u!50 &1631270818196809960
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1282466997189822055}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 4
 --- !u!1 &5498893091368657424
 GameObject:
   m_ObjectHideFlags: 0
@@ -237,9 +283,10 @@ GameObject:
   m_Component:
   - component: {fileID: 4982404561365403080}
   - component: {fileID: 540207419430351168}
+  - component: {fileID: 5759367827416545389}
   m_Layer: 0
   m_Name: R
-  m_TagString: Untagged
+  m_TagString: Collider
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -288,7 +335,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0.30688566, y: 0.0011848658}
@@ -304,6 +351,20 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.1589359, y: 0.24424759}
   m_EdgeRadius: 0
+--- !u!114 &5759367827416545389
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5498893091368657424}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 138df9b997f631649a9b0196502dc5a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parentBlock: {fileID: 0}
+  refPosition: {x: 1, y: 0}
 --- !u!1 &8987764289435174887
 GameObject:
   m_ObjectHideFlags: 0
@@ -314,9 +375,10 @@ GameObject:
   m_Component:
   - component: {fileID: 1718315462757760673}
   - component: {fileID: 8223888275316684527}
+  - component: {fileID: 5696292824660931208}
   m_Layer: 0
   m_Name: L
-  m_TagString: Untagged
+  m_TagString: Collider
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -365,7 +427,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: -0.30807078, y: 0.0011848658}
@@ -381,6 +443,20 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.16604519, y: 0.24424759}
   m_EdgeRadius: 0
+--- !u!114 &5696292824660931208
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8987764289435174887}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 138df9b997f631649a9b0196502dc5a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parentBlock: {fileID: 0}
+  refPosition: {x: -1, y: 0}
 --- !u!1 &9052369410770624461
 GameObject:
   m_ObjectHideFlags: 0
@@ -391,9 +467,10 @@ GameObject:
   m_Component:
   - component: {fileID: 1249070020748804166}
   - component: {fileID: 4253758237896102411}
+  - component: {fileID: 193581520461958684}
   m_Layer: 0
   m_Name: U
-  m_TagString: Untagged
+  m_TagString: Collider
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -442,7 +519,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0.31399512}
@@ -458,3 +535,17 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.24187803, y: 0.16841489}
   m_EdgeRadius: 0
+--- !u!114 &193581520461958684
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9052369410770624461}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 138df9b997f631649a9b0196502dc5a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parentBlock: {fileID: 0}
+  refPosition: {x: 0, y: 1}
