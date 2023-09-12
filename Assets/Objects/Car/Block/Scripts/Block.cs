@@ -7,6 +7,7 @@ using static Unity.Collections.AllocatorManager;
 [RequireComponent(typeof(BoxCollider2D), typeof(Rigidbody2D))]
 public class Block : MonoBehaviour
 {
+    BlocksGraph graph;
     /// <summary>
     /// Список блоков, к которым блок присоединен
     /// </summary>
@@ -47,10 +48,21 @@ public class Block : MonoBehaviour
             { typeof(Connected), new Connected(this) },
         };
         EnterState<Idle>();
+        core = GetCore();
+        graph = GetGraph();
+    }
+
+    private Block GetCore()
+    {
         if (isCore)
-            core = this;
+            return this;
         else
-            core = GameObject.FindGameObjectWithTag("Core").GetComponent<Block>();
+            return GameObject.FindGameObjectWithTag("Core").GetComponent<Block>();
+    }
+
+    private BlocksGraph GetGraph()
+    {
+        return GameObject.FindGameObjectWithTag("Car").GetComponent<BlocksGraph>();
     }
 
     public void Update()
@@ -85,6 +97,7 @@ public class Block : MonoBehaviour
         if (!CanDisconnect())
             return;
         isConnected = false;
+        graph.Remove(this);
         connectedBlocks.Remove(block);
         block.connectedBlocks.Remove(this);
     }
@@ -99,6 +112,7 @@ public class Block : MonoBehaviour
         position = block.refPosition;
         EnterState<Connected>();
         isConnected = true;
+        graph.Add(this, connectedBlocks);
     }
 
     public void EnterState<TState>() where TState : IBlockState
@@ -117,6 +131,8 @@ public class Block : MonoBehaviour
             EnterState<Drag>();
         if (currentState.GetType() == typeof(Connected) && CanDisconnect())
             EnterState<Drag>();
+        if (isConnected)
+            Debug.Log(graph.CanRemove(this));
     }
 
     public void OnMouseUp()
