@@ -72,7 +72,9 @@ public class Block : MonoBehaviour
 
     public bool CanDisconnect()
     {
-        return true; // TODO: Реализация
+        if(graph.CanRemove(this)) 
+            return true;
+        return false;
     }
 
     public void DisconnectAll()
@@ -102,17 +104,22 @@ public class Block : MonoBehaviour
         block.connectedBlocks.Remove(this);
     }
 
+    public void AddReference(Block block)
+    {
+        connectedBlocks.Add(block);
+    }
+
     public void ConnectTo(BlockCollider block)
     {
          if (!CanConnectTo(block.parentBlock))
             return;
-        connectedBlocks.Add(block.parentBlock);
-        block.parentBlock.connectedBlocks.Add(this);
+        AddReference(block.parentBlock);
+        block.parentBlock.AddReference(this);
+        graph.Add(this, connectedBlocks);
         transform.position = new Vector2(block.parentBlock.transform.position.x, block.parentBlock.transform.position.y) + block.refPosition * 0.645f;
         position = block.refPosition;
         EnterState<Connected>();
         isConnected = true;
-        graph.Add(this, connectedBlocks);
     }
 
     public void EnterState<TState>() where TState : IBlockState
@@ -126,13 +133,14 @@ public class Block : MonoBehaviour
 
     public void OnMouseDown()
     {
+        if (isConnected)
+            Debug.Log(graph.CanRemove(this));
         if (isCore) return;
         if(currentState?.GetType() == typeof(Idle))
             EnterState<Drag>();
         if (currentState.GetType() == typeof(Connected) && CanDisconnect())
             EnterState<Drag>();
-        if (isConnected)
-            Debug.Log(graph.CanRemove(this));
+        
     }
 
     public void OnMouseUp()

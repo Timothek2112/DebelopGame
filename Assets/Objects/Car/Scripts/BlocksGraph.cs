@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Linq;
 using UnityEditor.Search;
 
+[Serializable]
 public class Vertex
 {
     public Block block;
@@ -25,19 +26,32 @@ public class Vertex
 public class BlocksGraph : MonoBehaviour
 {
     public List<Vertex> vertices = new List<Vertex>();
+    public Vertex core;
 
-    public void Add(Block block, List<Block> connected)
+    private void Awake()
+    {
+        Block core = GameObject.FindGameObjectWithTag("Core").GetComponent<Block>();
+        this.core = Add(core, core.connectedBlocks);
+    }
+
+    public Vertex Add(Block block, List<Block> connected)
     {
         var vert = new Vertex(block);
         foreach(var item in connected)
         {
             var vertex = vertices.FirstOrDefault(p => p.block == item);
-            if (vertex == null)
-            {
-                vertex = new Vertex(block);
-            }
-            vert.connectedTo.Add(vertex);
+            AddReference(vert, vertex);
+            AddReference(vertex, vert);
         }
+        vertices.Add(vert);
+        return vert;
+    }
+
+    private void AddReference(Vertex from, Vertex to)
+    {
+        if (from.connectedTo.Contains(to))
+            return;
+        from.connectedTo.Add(to);
     }
 
     public void Remove(Block block)
@@ -53,9 +67,11 @@ public class BlocksGraph : MonoBehaviour
     {
         List<Vertex> targets = Copy(vertices.FirstOrDefault(p => p.block == block).connectedTo);
         List<Vertex> vertCopy = Copy(vertices);
+        vertCopy.Remove(vertCopy.FirstOrDefault(p => p.block == block));
         Queue<Vertex> queue = new Queue<Vertex>();
         List<Vertex> passed = new List<Vertex>();
-        queue.Enqueue(vertCopy[0]);
+        queue.Enqueue(core);
+        Remove(block);
         while (queue.Count > 0)
         {
             Vertex current = queue.Dequeue();
@@ -65,6 +81,7 @@ public class BlocksGraph : MonoBehaviour
             }
             if(targets.Count == 0)
             {
+                Add(block, block.connectedBlocks);
                 return true;
             }
             foreach(var vert in current.connectedTo)
@@ -75,6 +92,7 @@ public class BlocksGraph : MonoBehaviour
             }
             passed.Add(current);
         }
+        Add(block, block.connectedBlocks);
         return false;
     }
 
