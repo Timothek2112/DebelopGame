@@ -34,16 +34,21 @@ public class BlocksGraph : MonoBehaviour
         this.core = Add(core, core.connectedBlocks);
     }
 
-    public Vertex Add(Block block, List<Block> connected)
+    public Vertex Add(Block block, List<Block> connected) // Не добавлять вершину в граф, если она уже есть
     {
-        var vert = new Vertex(block);
-        foreach(var item in connected)
+        Vertex vert = vertices.FirstOrDefault(p => p.block == block);
+        if (vert == null)
+        {
+            vert = new Vertex(block);
+            vertices.Add(vert);
+            vert.connectedTo = new List<Vertex>();
+        }
+        foreach (var item in connected)
         {
             var vertex = vertices.FirstOrDefault(p => p.block == item);
             AddReference(vert, vertex);
             AddReference(vertex, vert);
         }
-        vertices.Add(vert);
         return vert;
     }
 
@@ -54,18 +59,30 @@ public class BlocksGraph : MonoBehaviour
         from.connectedTo.Add(to);
     }
 
+    public bool Contains(Block block)
+    {
+        if(vertices.FirstOrDefault(p => p.block == block) == null) return false;
+        return true;
+    }
+
     public void Remove(Block block)
     {
+        if(vertices.FirstOrDefault(p => p.block == block) == null) return;
         foreach(var vert in vertices)
         {
-            vert.connectedTo.Remove(vert.connectedTo.FirstOrDefault(p => p.block == block));
+            Vertex finded = vert.connectedTo.FirstOrDefault(p => p.block == block);
+            if(finded != null)
+                vert.connectedTo.Remove(finded);
         }
         vertices.Remove(vertices.FirstOrDefault(p => p.block == block));
     }
 
     public bool CanRemove(Block block)
-    {
-        List<Vertex> targets = Copy(vertices.FirstOrDefault(p => p.block == block).connectedTo);
+        {
+        
+        Vertex blockVert = vertices.FirstOrDefault(p => p.block == block);
+        List<Vertex> connected = blockVert.connectedTo;
+        List<Vertex> targets = Copy(connected);
         List<Vertex> vertCopy = Copy(vertices);
         vertCopy.Remove(vertCopy.FirstOrDefault(p => p.block == block));
         Queue<Vertex> queue = new Queue<Vertex>();
@@ -88,6 +105,7 @@ public class BlocksGraph : MonoBehaviour
             {
                 if (passed.Contains(vert))
                     continue;
+
                 queue.Enqueue(vert);
             }
             passed.Add(current);

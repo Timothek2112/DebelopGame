@@ -72,6 +72,7 @@ public class Block : MonoBehaviour
 
     public bool CanDisconnect()
     {
+        if (!isConnected) return true;
         if(graph.CanRemove(this)) 
             return true;
         return false;
@@ -97,9 +98,10 @@ public class Block : MonoBehaviour
         if (!connectedBlocks.Contains(block))
             return;
         if (!CanDisconnect())
-            return;
+            return; 
+        if(graph.Contains(this))
+            graph.Remove(this);
         isConnected = false;
-        graph.Remove(this);
         connectedBlocks.Remove(block);
         block.connectedBlocks.Remove(this);
     }
@@ -133,14 +135,14 @@ public class Block : MonoBehaviour
 
     public void OnMouseDown()
     {
-        if (isConnected)
-            Debug.Log(graph.CanRemove(this));
         if (isCore) return;
         if(currentState?.GetType() == typeof(Idle))
             EnterState<Drag>();
         if (currentState.GetType() == typeof(Connected) && CanDisconnect())
+        {
             EnterState<Drag>();
-        
+        }
+
     }
 
     public void OnMouseUp()
