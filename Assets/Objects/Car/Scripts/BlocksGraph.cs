@@ -25,8 +25,8 @@ public class Vertex
 
 public class BlocksGraph : MonoBehaviour
 {
-    public List<Vertex> vertices = new List<Vertex>();
-    public Vertex core;
+    private List<Vertex> vertices = new List<Vertex>();
+    private Vertex core;
 
     private void Awake()
     {
@@ -78,8 +78,7 @@ public class BlocksGraph : MonoBehaviour
     }
 
     public bool CanRemove(Block block)
-        {
-        
+    {
         Vertex blockVert = vertices.FirstOrDefault(p => p.block == block);
         List<Vertex> connected = blockVert.connectedTo;
         List<Vertex> targets = Copy(connected);
