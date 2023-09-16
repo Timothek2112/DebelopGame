@@ -1621,6 +1621,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4139921378414323497, guid: 544098c3fd4cdc54da0dfbbfd7491009, type: 3}
+      propertyPath: m_Mass
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 8285531268558134872, guid: 544098c3fd4cdc54da0dfbbfd7491009, type: 3}
+      propertyPath: speed
+      value: 10000
+      objectReference: {fileID: 0}
+    - target: {fileID: 8285531268558134872, guid: 544098c3fd4cdc54da0dfbbfd7491009, type: 3}
+      propertyPath: turnSpeed
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 8285531268558134872, guid: 544098c3fd4cdc54da0dfbbfd7491009, type: 3}
+      propertyPath: stoppingFactor
+      value: 0.99
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

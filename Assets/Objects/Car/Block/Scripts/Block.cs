@@ -118,10 +118,12 @@ public class Block : MonoBehaviour
         AddReference(block.parentBlock);
         block.parentBlock.AddReference(this);
         graph.Add(this, connectedBlocks);
-        transform.position = new Vector2(block.parentBlock.transform.position.x, block.parentBlock.transform.position.y) + block.refPosition * 0.645f;
+
+        transform.position = new Vector2(block.parentBlock.transform.position.x, block.parentBlock.transform.position.y) + block.refPosition.normalized * 0.645f;
         position = block.refPosition;
         EnterState<Connected>();
         isConnected = true;
+        transform.rotation = block.transform.rotation;
     }
 
     public void EnterState<TState>() where TState : IBlockState
