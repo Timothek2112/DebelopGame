@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 using UnityEngine;
 
 public class BlockCollider : MonoBehaviour
 {
     public Block parentBlock;
     public Vector2 refPosition;
+    public bool isTaken = false;
+    public Transform positionForBlock;
 
     private void Awake()
     {
@@ -20,7 +23,9 @@ public class BlockCollider : MonoBehaviour
             var collider = collision.GetComponent<BlockCollider>();
             if (!collider.parentBlock.isConnected)
                 return;
-            parentBlock.canConnectTo.Add(collider);
+            if (collider.isTaken) return;
+            if (refPosition != -collider.refPosition) return;
+            parentBlock.canConnectTo.Add(new Tuple<BlockCollider, BlockCollider>(this, collider));
         }
     }
 
@@ -30,9 +35,9 @@ public class BlockCollider : MonoBehaviour
         {
             var collider = collision.GetComponent<BlockCollider>();
 
-            if (parentBlock.canConnectTo.Contains(collider))
+            if (parentBlock.canConnectTo.Contains(new Tuple<BlockCollider, BlockCollider>(this, collider)))
             {
-                parentBlock.canConnectTo.Remove(collider);
+                parentBlock.canConnectTo.Remove(new Tuple<BlockCollider, BlockCollider>(this, collider));
             }
         }
     }

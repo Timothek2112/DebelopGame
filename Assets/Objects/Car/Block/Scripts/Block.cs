@@ -7,40 +7,43 @@ using static Unity.Collections.AllocatorManager;
 [RequireComponent(typeof(BoxCollider2D), typeof(Rigidbody2D))]
 public class Block : MonoBehaviour
 {
+    GameObject car;
     BlocksGraph graph;
     /// <summary>
-    /// Список блоков, к которым блок присоединен
+    /// РЎРїРёСЃРѕРє Р±Р»РѕРєРѕРІ, Рє РєРѕС‚РѕСЂС‹Рј Р±Р»РѕРє РїСЂРёСЃРѕРµРґРёРЅРµРЅ
     /// </summary>
     public List<Block> connectedBlocks = new List<Block>();
+    public List<Tuple<BlockCollider, BlockCollider>> connectedColliders = new List<Tuple<BlockCollider, BlockCollider>>();
     /// <summary>
-    /// Список блоков, к котором блок может присоединиться
+    /// РЎРїРёСЃРѕРє Р±Р»РѕРєРѕРІ, Рє РєРѕС‚РѕСЂРѕРј Р±Р»РѕРє РјРѕР¶РµС‚ РїСЂРёСЃРѕРµРґРёРЅРёС‚СЊСЃСЏ
     /// </summary>
-    public List<BlockCollider> canConnectTo = new List<BlockCollider>();
+    public List<Tuple<BlockCollider, BlockCollider>> canConnectTo = new List<Tuple<BlockCollider, BlockCollider>>();
     /// <summary>
-    /// Если true - это Core блок машины
+    /// Р•СЃР»Рё true - СЌС‚Рѕ Core Р±Р»РѕРє РјР°С€РёРЅС‹
     /// </summary>
     public bool isCore = false;
     /// <summary>
-    /// Текущее состояние блока !!! Менять только через метод EnterState !!!
+    /// РўРµРєСѓС‰РµРµ СЃРѕСЃС‚РѕСЏРЅРёРµ Р±Р»РѕРєР° !!! РњРµРЅСЏС‚СЊ С‚РѕР»СЊРєРѕ С‡РµСЂРµР· РјРµС‚РѕРґ EnterState !!!
     /// </summary>
     public IBlockState currentState;
     /// <summary>
-    /// Список всех возможных состояний блока, присваивается в методе Awake, после этого менять не нужно
+    /// РЎРїРёСЃРѕРє РІСЃРµС… РІРѕР·РјРѕР¶РЅС‹С… СЃРѕСЃС‚РѕСЏРЅРёР№ Р±Р»РѕРєР°, РїСЂРёСЃРІР°РёРІР°РµС‚СЃСЏ РІ РјРµС‚РѕРґРµ Awake, РїРѕСЃР»Рµ СЌС‚РѕРіРѕ РјРµРЅСЏС‚СЊ РЅРµ РЅСѓР¶РЅРѕ
     /// </summary>
     public Dictionary<Type, IBlockState> allStates;
     public Vector2 position;
     /// <summary>
-    /// Эта переменная ссылается на Core блок машины игрока
+    /// Р­С‚Р° РїРµСЂРµРјРµРЅРЅР°СЏ СЃСЃС‹Р»Р°РµС‚СЃСЏ РЅР° Core Р±Р»РѕРє РјР°С€РёРЅС‹ РёРіСЂРѕРєР°
     /// </summary>
     public Block core;
     /// <summary>
-    /// Если переменная true, значит этот блок присоединен, если false - нет
+    /// Р•СЃР»Рё РїРµСЂРµРјРµРЅРЅР°СЏ true, Р·РЅР°С‡РёС‚ СЌС‚РѕС‚ Р±Р»РѕРє РїСЂРёСЃРѕРµРґРёРЅРµРЅ, РµСЃР»Рё false - РЅРµС‚
     /// </summary>
     public bool isConnected = false;
-    
+    public List<BlockCollider> thisColliders = new List<BlockCollider>();
+
     public void Awake()
     {
-        allStates = new Dictionary<Type, IBlockState>() // Здесь задаются все возможные состояния
+        allStates = new Dictionary<Type, IBlockState>() // Р—РґРµСЃСЊ Р·Р°РґР°СЋС‚СЃСЏ РІСЃРµ РІРѕР·РјРѕР¶РЅС‹Рµ СЃРѕСЃС‚РѕСЏРЅРёСЏ
         {
             { typeof(Idle), new Idle(this) },
             { typeof(Drag), new Drag(this) },
@@ -50,6 +53,12 @@ public class Block : MonoBehaviour
         EnterState<Idle>();
         core = GetCore();
         graph = GetGraph();
+        car = GetCar();
+    }
+
+    private GameObject GetCar()
+    {
+        return GameObject.FindGameObjectWithTag("Car");
     }
 
     private Block GetCore()
@@ -73,14 +82,14 @@ public class Block : MonoBehaviour
     public bool CanDisconnect()
     {
         if (!isConnected) return true;
-        if(graph.CanRemove(this)) 
+        if (graph.CanRemove(this))
             return true;
         return false;
     }
 
     public void DisconnectAll()
     {
-        while(connectedBlocks.Count > 0)
+        while (connectedBlocks.Count > 0)
         {
             DisconnectFrom(connectedBlocks[0]);
         }
@@ -90,7 +99,7 @@ public class Block : MonoBehaviour
     {
         if (connectedBlocks.Contains(block))
             return false;
-        return true; // TODO: Реализация
+        return true;
     }
 
     public void DisconnectFrom(Block block)
@@ -98,9 +107,33 @@ public class Block : MonoBehaviour
         if (!connectedBlocks.Contains(block))
             return;
         if (!CanDisconnect())
-            return; 
-        if(graph.Contains(this))
+            return;
+        if (graph.Contains(this))
             graph.Remove(this);
+        foreach (var collider in block.thisColliders)
+        {
+            for (int i = 0; i < connectedColliders.Count; i++)
+            {
+                if (connectedColliders[i].Item2 == collider)
+                {
+                    connectedColliders[i].Item1.isTaken = false;
+                    connectedColliders[i].Item2.isTaken = false;
+                    connectedColliders.RemoveAt(i);
+                }
+            }
+        }
+        foreach (var collider in thisColliders)
+        {
+            for (int i = 0; i < block.connectedColliders.Count; i++)
+            {
+                if (block.connectedColliders[i].Item2 == collider)
+                {
+                    block.connectedColliders[i].Item1.isTaken = false;
+                    block.connectedColliders[i].Item2.isTaken = false; 
+                    block.connectedColliders.RemoveAt(i);
+                }
+            }
+        }
         isConnected = false;
         connectedBlocks.Remove(block);
         block.connectedBlocks.Remove(this);
@@ -111,19 +144,33 @@ public class Block : MonoBehaviour
         connectedBlocks.Add(block);
     }
 
-    public void ConnectTo(BlockCollider block)
+    public void ConnectToCanConnect()
     {
-         if (!CanConnectTo(block.parentBlock))
-            return;
-        AddReference(block.parentBlock);
-        block.parentBlock.AddReference(this);
-        graph.Add(this, connectedBlocks);
+        if (canConnectTo.Count > 0)
+        {
+            foreach (var collider in canConnectTo)
+            {
+                ConnectTo(collider);
+            }
+        }
+    }
 
-        transform.position = new Vector2(block.parentBlock.transform.position.x, block.parentBlock.transform.position.y) + block.refPosition.normalized * 0.645f;
-        position = block.refPosition;
+    public void ConnectTo(Tuple<BlockCollider, BlockCollider> colliders)
+    {
+        if (!CanConnectTo(colliders.Item2.parentBlock))
+            return;
+        AddReference(colliders.Item2.parentBlock);
+        colliders.Item2.parentBlock.AddReference(this);
+        graph.Add(this, connectedBlocks);
+        position = colliders.Item2.refPosition;
         EnterState<Connected>();
         isConnected = true;
-        transform.rotation = block.transform.rotation;
+        colliders.Item2.isTaken = true;
+        colliders.Item1.isTaken = true;
+        connectedColliders.Add(colliders);
+        colliders.Item2.parentBlock.connectedColliders.Add(new Tuple<BlockCollider, BlockCollider>(colliders.Item2, colliders.Item1));
+        transform.rotation = colliders.Item2.transform.rotation;
+        transform.position = new Vector2(colliders.Item2.positionForBlock.position.x, colliders.Item2.positionForBlock.position.y);
     }
 
     public void EnterState<TState>() where TState : IBlockState
@@ -138,7 +185,7 @@ public class Block : MonoBehaviour
     public void OnMouseDown()
     {
         if (isCore) return;
-        if(currentState?.GetType() == typeof(Idle))
+        if (currentState?.GetType() == typeof(Idle))
             EnterState<Drag>();
         if (currentState.GetType() == typeof(Connected) && CanDisconnect())
         {
@@ -152,12 +199,6 @@ public class Block : MonoBehaviour
         if (isCore) return;
         if (currentState.GetType() == typeof(Drag))
             EnterState<Idle>();
-        if (canConnectTo.Count > 0)
-        {
-            foreach (var collider in canConnectTo)
-            {
-                ConnectTo(collider);
-            }
-        }
+        ConnectToCanConnect();
     }
 }
