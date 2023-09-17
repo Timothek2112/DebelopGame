@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4249122889290048771}
   - component: {fileID: 3217132881488523292}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: Info
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -91,7 +91,7 @@ GameObject:
   - component: {fileID: 1194374991054819938}
   - component: {fileID: 7358837889400519860}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Sell
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -725,7 +725,7 @@ GameObject:
   - component: {fileID: 8160655401116666250}
   - component: {fileID: 162182346097474311}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: BlocksField
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

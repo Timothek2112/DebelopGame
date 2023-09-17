@@ -132,7 +132,7 @@ Transform:
   - {fileID: 1249070020748804166}
   - {fileID: 3179417994667364807}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &5030885934838176859
 SpriteRenderer:
@@ -198,6 +198,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f2db8a686e45ce4a941584744da835a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  type: 0
   connectedBlocks: []
   isCore: 0
   position: {x: 0, y: 0}

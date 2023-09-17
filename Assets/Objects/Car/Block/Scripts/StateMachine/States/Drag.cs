@@ -24,7 +24,7 @@ public class Drag : IBlockState
     {
         Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         block.transform.rotation = car.transform.rotation;
-        if (FindDistanceToNearestBlock(mousePos) > 1)
+        if (FindDistanceToNearestBlock(mousePos) > 15)
         {
             rigidbody.velocity = (new Vector3(mousePos.x, mousePos.y, block.transform.position.z) - block.transform.position) * dragSpeed;
         }
