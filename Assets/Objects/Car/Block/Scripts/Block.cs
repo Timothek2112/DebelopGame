@@ -1,12 +1,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using static Unity.Collections.AllocatorManager;
 
 [RequireComponent(typeof(BoxCollider2D), typeof(Rigidbody2D))]
 public class Block : MonoBehaviour
 {
+    public BlocksEnum type;
     GameObject car;
     BlocksGraph graph;
     /// <summary>
@@ -17,7 +19,7 @@ public class Block : MonoBehaviour
     /// <summary>
     /// Список блоков, к котором блок может присоединиться
     /// </summary>
-    public List<Tuple<BlockCollider, BlockCollider>> canConnectTo = new List<Tuple<BlockCollider, BlockCollider>>();
+    public List<Tuple<BlockCollider, BlockCollider>> canConnectColliders = new List<Tuple<BlockCollider, BlockCollider>>();
     /// <summary>
     /// Если true - это Core блок машины
     /// </summary>
@@ -104,12 +106,18 @@ public class Block : MonoBehaviour
 
     public void DisconnectFrom(Block block)
     {
-        if (!connectedBlocks.Contains(block))
-            return;
-        if (!CanDisconnect())
-            return;
-        if (graph.Contains(this))
-            graph.Remove(this);
+        if (!connectedBlocks.Contains(block)) return;
+        if (!CanDisconnect()) return;
+        graph.Remove(this);
+        RemoveColliderConnections(block);
+        block.RemoveColliderConnections(this);
+        connectedBlocks.Remove(block);
+        block.connectedBlocks.Remove(this);
+        isConnected = false;
+    }
+
+    private void RemoveColliderConnections(Block block)
+    {
         foreach (var collider in block.thisColliders)
         {
             for (int i = 0; i < connectedColliders.Count; i++)
@@ -122,33 +130,13 @@ public class Block : MonoBehaviour
                 }
             }
         }
-        foreach (var collider in thisColliders)
-        {
-            for (int i = 0; i < block.connectedColliders.Count; i++)
-            {
-                if (block.connectedColliders[i].Item2 == collider)
-                {
-                    block.connectedColliders[i].Item1.isTaken = false;
-                    block.connectedColliders[i].Item2.isTaken = false; 
-                    block.connectedColliders.RemoveAt(i);
-                }
-            }
-        }
-        isConnected = false;
-        connectedBlocks.Remove(block);
-        block.connectedBlocks.Remove(this);
-    }
-
-    public void AddReference(Block block)
-    {
-        connectedBlocks.Add(block);
     }
 
     public void ConnectToCanConnect()
     {
-        if (canConnectTo.Count > 0)
+        if (canConnectColliders.Count > 0)
         {
-            foreach (var collider in canConnectTo)
+            foreach (var collider in canConnectColliders)
             {
                 ConnectTo(collider);
             }
@@ -159,18 +147,38 @@ public class Block : MonoBehaviour
     {
         if (!CanConnectTo(colliders.Item2.parentBlock))
             return;
-        AddReference(colliders.Item2.parentBlock);
-        colliders.Item2.parentBlock.AddReference(this);
+        AddReferencesFromThis(colliders.Item2.parentBlock);
         graph.Add(this, connectedBlocks);
+        ConnectCollidersBothWays(colliders);
+        SyncPosAndRotation(colliders.Item2);
+        isConnected = true;
         position = colliders.Item2.refPosition;
         EnterState<Connected>();
-        isConnected = true;
-        colliders.Item2.isTaken = true;
-        colliders.Item1.isTaken = true;
+    }
+
+    private void SyncPosAndRotation(BlockCollider collider)
+    {
+        transform.rotation = collider.transform.rotation;
+        transform.position = new Vector2(collider.positionForBlock.position.x, collider.positionForBlock.position.y);
+    }
+
+    private void ConnectCollidersBothWays(Tuple<BlockCollider, BlockCollider> colliders)
+    {
         connectedColliders.Add(colliders);
         colliders.Item2.parentBlock.connectedColliders.Add(new Tuple<BlockCollider, BlockCollider>(colliders.Item2, colliders.Item1));
-        transform.rotation = colliders.Item2.transform.rotation;
-        transform.position = new Vector2(colliders.Item2.positionForBlock.position.x, colliders.Item2.positionForBlock.position.y);
+        colliders.Item2.isTaken = true;
+        colliders.Item1.isTaken = true;
+    }
+
+    private void AddReferencesFromThis(Block block2)
+    {
+        AddReference(block2);
+        block2.AddReference(this);
+    }
+
+    private void AddReference(Block block)
+    {
+        connectedBlocks.Add(block);
     }
 
     public void EnterState<TState>() where TState : IBlockState
@@ -180,6 +188,11 @@ public class Block : MonoBehaviour
         currentState?.Exit();
         currentState = state;
         state.Enter();
+    }
+
+    public bool CompareState<TState>() where TState : IBlockState
+    {
+        return currentState.GetType() == typeof(TState);
     }
 
     public void OnMouseDown()

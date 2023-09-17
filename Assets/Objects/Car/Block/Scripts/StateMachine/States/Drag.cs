@@ -69,7 +69,6 @@ public class Drag : IBlockState
                 minPosition = collider.GetComponent<BlockCollider>().positionForBlock.position;
             }
         }
-        Debug.Log(minDistance);
         return minPosition;
     }
 }

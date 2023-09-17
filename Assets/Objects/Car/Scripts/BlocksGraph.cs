@@ -67,7 +67,7 @@ public class BlocksGraph : MonoBehaviour
 
     public void Remove(Block block)
     {
-        if(vertices.FirstOrDefault(p => p.block == block) == null) return;
+        if (!Contains(block)) return; 
         foreach(var vert in vertices)
         {
             Vertex finded = vert.connectedTo.FirstOrDefault(p => p.block == block);

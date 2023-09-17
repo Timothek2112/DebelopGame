@@ -25,7 +25,7 @@ public class BlockCollider : MonoBehaviour
                 return;
             if (collider.isTaken) return;
             if (refPosition != -collider.refPosition) return;
-            parentBlock.canConnectTo.Add(new Tuple<BlockCollider, BlockCollider>(this, collider));
+            parentBlock.canConnectColliders.Add(new Tuple<BlockCollider, BlockCollider>(this, collider));
         }
     }
 
@@ -35,9 +35,9 @@ public class BlockCollider : MonoBehaviour
         {
             var collider = collision.GetComponent<BlockCollider>();
 
-            if (parentBlock.canConnectTo.Contains(new Tuple<BlockCollider, BlockCollider>(this, collider)))
+            if (parentBlock.canConnectColliders.Contains(new Tuple<BlockCollider, BlockCollider>(this, collider)))
             {
-                parentBlock.canConnectTo.Remove(new Tuple<BlockCollider, BlockCollider>(this, collider));
+                parentBlock.canConnectColliders.Remove(new Tuple<BlockCollider, BlockCollider>(this, collider));
             }
         }
     }
