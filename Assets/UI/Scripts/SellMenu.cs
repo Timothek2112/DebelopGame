@@ -13,22 +13,32 @@ public abstract class IOnBlockEnteredUI : MonoBehaviour
 
 public class SellMenu : IOnBlockEnteredUI
 {
-    public float sum = 0;
+    private float _sum = 0;
+    public float sum { 
+        get
+        {
+            return _sum;
+        }
+        set
+        {
+            _sum = value;
+            UpdateCounter();
+        }
+    }
+    [SerializeField] List<BlockCostPair> extraPrices = new List<BlockCostPair>();
     [SerializeField] TMP_Text sumContainer;
-    [SerializeField] ShopSettings shopSettings;
+    [SerializeField] BlockInputUI blockInputUI;
 
     public override void OnBlockEntered(Block block)
     {
-        float cost = shopSettings.costs.FirstOrDefault(p => p.block == block.type).cost;
+        float cost = GetCostForBlock(block);
         sum += cost;
-        UpdateCounter();
     }
 
     public override void OnBlockExited(Block block)
     {
-        float cost = shopSettings.costs.FirstOrDefault(p => p.block == block.type).cost;
+        float cost = GetCostForBlock(block);
         sum -= cost;
-        UpdateCounter();
     }
 
     public void UpdateCounter()
@@ -36,5 +46,18 @@ public class SellMenu : IOnBlockEnteredUI
         sumContainer.text = sum.ToString();
     }
 
-    
+    public void OnSellClick()
+    {
+        Wallet playerWallet = GameObject.FindGameObjectWithTag("Car").GetComponent<Wallet>();
+        playerWallet.PutMoney(sum);
+        blockInputUI.DeleteAllBlocks();
+        sum = 0;
+    }
+    public float GetCostForBlock(Block block)
+    {
+        BlockCostPair extraPrice = extraPrices.FirstOrDefault(p => p.block == block);
+        float extra = 0;
+        if (extraPrice != null) extra = (block.GetCost() / 100) * extraPrice.cost;
+        return block.GetCost() + extra;
+    }
 }

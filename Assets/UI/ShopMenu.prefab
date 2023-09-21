@@ -199,7 +199,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1194374991054819938}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5356062084211963616}
+        m_TargetAssemblyTypeName: SellMenu, Assembly-CSharp
+        m_MethodName: OnSellClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &3973134866335463056
 GameObject:
   m_ObjectHideFlags: 0
@@ -482,6 +494,7 @@ GameObject:
   - component: {fileID: 2920648820175431771}
   - component: {fileID: 3014346710865563274}
   - component: {fileID: 8422217191617715589}
+  - component: {fileID: 5356062084211963616}
   m_Layer: 5
   m_Name: ShopMenu
   m_TagString: Untagged
@@ -506,7 +519,7 @@ RectTransform:
   - {fileID: 881661051248171623}
   - {fileID: 4320401797061976788}
   m_Father: {fileID: 0}
-  m_RootOrder: 24
+  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -576,6 +589,21 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &5356062084211963616
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5226130355747927793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 104fea1b3841a7246a5becccc55921bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sumContainer: {fileID: 1713737372919917943}
+  shopSettings: {fileID: 11400000, guid: e8745ea110d354c4e80bf027cd232b8a, type: 2}
+  blockInputUI: {fileID: 162182346097474311}
 --- !u!1 &5270307497429064228
 GameObject:
   m_ObjectHideFlags: 0
@@ -848,6 +876,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uiLayer: 6
   blocksLayer: 7
+  onBlockEnteredUI: {fileID: 5356062084211963616}
+  blocksInUI: []
 --- !u!1001 &6510374358847100965
 PrefabInstance:
   m_ObjectHideFlags: 0

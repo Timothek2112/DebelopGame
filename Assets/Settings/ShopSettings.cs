@@ -6,7 +6,7 @@ using UnityEngine;
 [Serializable]
 public class BlockCostPair
 {
-    public BlocksEnum block;
+    public Block block;
     public float cost;
 }
 

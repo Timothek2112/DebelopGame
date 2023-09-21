@@ -10,6 +10,7 @@ public class Block : MonoBehaviour
 {
     public BlocksEnum type;
     GameObject car;
+    public string name = "aaa";
     BlocksGraph graph;
     /// <summary>
     /// Список блоков, к которым блок присоединен
@@ -42,6 +43,7 @@ public class Block : MonoBehaviour
     /// </summary>
     public bool isConnected = false;
     public List<BlockCollider> thisColliders = new List<BlockCollider>();
+    public float defaultCost = 10;
 
     public void Awake()
     {
@@ -213,5 +215,10 @@ public class Block : MonoBehaviour
         if (currentState.GetType() == typeof(Drag))
             EnterState<Idle>();
         ConnectToCanConnect();
+    }
+
+    public float GetCost()
+    {
+        return defaultCost;
     }
 }
